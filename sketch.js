@@ -1,67 +1,72 @@
-var bullet , wall , damage ;
-var speed , weight ,wallLeftEdge; 
-var thickness , bulletRightEdge;
-var bullet1 , wall1, ;
-var speed1 , weight1 ,wallLeftEdge1; 
-var thickness1 , bulletRightEdge1;
-function setup() {
-  createCanvas(1600,400);
-  speed = random(5,8);
-  weight = random(50,90);
-  bullet = createSprite(50,150,50,50);
-  bullet.velocityX  = speed ;
-  bullet.shapeColor = "yellow";
-  wall = createSprite(1200,80,thickness,400);
-  wall.shapeColor = "white";
-  thickness = random(20,30);
-  damage = 0.5*speed*weight*speed/thickness*thickness*thickness
+var helicopterIMG, helicopterSprite, packageSprite,packageIMG;
+var packageBody,ground
+const Engine = Matter.Engine;
+const World = Matter.World;
+const Bodies = Matter.Bodies;
+const Body = Matter.Body;
 
-  speed1 = random(5,8);
-  weight1 = random(60,100);
-  bullet1 = createSprite(50,150,50,50);
-  bullet1.velocityX  = speed ;
-  bullet1.shapeColor = "yellow";
-  wall1 = createSprite(1200,200,thickness,400);
-  wall1.shapeColor = "white";
-  thickness1 = random(10,20);
-  damage = 0.5*speed1*weight1*speed1/thickness1*thickness1*thickness1;
+function preload()
+{
+	helicopterIMG=loadImage("helicopter.png")
+	packageIMG=loadImage("package.png")
 }
+
+function setup() {
+	createCanvas(800, 700);
+	rectMode(CENTER);
+	
+
+	packageSprite=createSprite(width/2, 80, 10,10);
+	packageSprite.addImage(packageIMG)
+	packageSprite.scale=0.2
+
+	helicopterSprite=createSprite(width/2, 200, 10,10);
+	helicopterSprite.addImage(helicopterIMG)
+	helicopterSprite.scale=0.6
+
+	groundSprite=createSprite(width/2, height-35, width,10);
+	groundSprite.shapeColor=color(255)
+
+
+	engine = Engine.create();
+	world = engine.world;
+
+	packageBody = Bodies.circle(width/2 , 200 , 5);
+	World.add(world, packageBody);
+	//
+
+	//Create a Ground
+	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
+ 	World.add(world, ground);
+
+
+	Engine.run(engine);
+  
+}
+
 
 function draw() {
-  background("black");
-  if(hasCollided(bullet,wall)){
-  bullet.velocityX = 0;
-  if(damage<10){
-    wall.shapeColor = "green";
+	background(0);
+  rectMode(CENTER);
+  
+  packageSprite.x= packageBody.position.x 
+  packageSprite.y= packageBody.position.y 
+  if (keyCode === "down") {
+	// Look at the hints in the document and understand how to make the package body fall only on press of the Down arrow key.
+   
+	//Matter.Bodies.setStatic(packageBody, isStatic = false);
+	packageBody.restitution = 1.0
   }
-  if(damage>10){
-    wall.shapeColor = "red";
-  }
-  }
-  if(hasCollided(bullet1,wall1)){
-    bullet.velocityX = 0;
-    if(damage<10){
-      wall1.shapeColor = "green";
-    }
-    if(damage>10){
-      wall1.shapeColor = "red";
-    }
-    }
-   drawSprites();
+  keyPressed();
+
+  drawSprites();
+
+ 
 }
-function hasCollided (){
-  bulletRightEdge = bullet.x + bullet.width ;
-  wallLeftEdge  = wall.x ;
-  if(bulletRightEdge >= wallLeftEdge){
-  return true;
-  }
- return false ;
+
+function keyPressed() {
+	
 }
-function hasCollided1 (){
-  bulletRightEdge1 = bullet1.x + bullet1.width ;
-  wallLeftEdge1  = wall1.x ;
-  if(bulletRightEdge1 >= wallLeftEdge1){
-  return true;
-  }
- return false ;
-}
+
+
+
